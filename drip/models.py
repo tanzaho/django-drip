@@ -173,3 +173,12 @@ class QuerySetRule(models.Model):
 
         # catch as default
         return qs.filter(**kwargs)
+
+
+class Unsubscription(models.Model):
+    """ Marks a user as unsubscribed from marketing emails. """
+    user = models.OneToOneField(User)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '<Unsubscription user=%s>' % self.user.username
