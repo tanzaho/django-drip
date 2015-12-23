@@ -70,7 +70,14 @@ class DripMessage(object):
     @property
     def body(self):
         if not self._body:
-            self._body = Template(self.drip_base.body_template).render(self.context)
+            body = Template(self.drip_base.body_template).render(self.context)
+            if self.drip_base.drip_model.marketing is True:
+                body += '\n\n'
+                body += '------------------------------' * 2
+                c = Subscription.for_user(self.user).unsubscribe_code
+                link = 'https://getsiphon.com/drip/unsubscribe/?code=%s' % c
+                body += '\n\n** Unsubscribe: %s' % link
+            self._body = body
         return self._body
 
     @property
