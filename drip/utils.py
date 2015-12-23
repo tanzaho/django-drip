@@ -41,7 +41,8 @@ def get_fields(Model,
         app_label, model_name = Model.split('.')
         Model = models.get_model(app_label, model_name)
 
-    fields = Model._meta.fields + Model._meta.many_to_many + Model._meta.get_all_related_objects()
+    fields = tuple(Model._meta.fields) + tuple(Model._meta.many_to_many) + \
+        tuple(Model._meta.get_all_related_objects())
     model_stack.append(Model)
 
     # do a variety of checks to ensure recursion isnt being redundant
