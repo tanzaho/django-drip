@@ -11,7 +11,7 @@ We wrote this specifically to scratch an itch at our startup [Zapier](https://za
 
 ### Installing:
 
-We highly recommend using pip to install *django-drip*, the packages are regularly updated 
+We highly recommend using pip to install *django-drip*, the packages are regularly updated
 with stable releases:
 
 ```
@@ -44,6 +44,13 @@ python manage.py syncdb
 # or...
 python manage.py migrate drip
 ```
+
+To use unsubscribe functionality, make sure you include the following in your `urls.py`:
+
+```
+url(r'^drip/', include('drip.urls', namespace='drip'))
+```
+
 -------------------
 
 ![what the admin looks like](https://raw.github.com/zapier/django-drip/master/docs/images/drip-example.png)
