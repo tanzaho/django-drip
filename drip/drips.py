@@ -9,7 +9,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 from django.contrib.auth.models import User
 
-from drip.models import SentDrip
+from drip.models import SentDrip, Unsubscription
 
 try:
     from django.utils.timezone import now as conditional_now
@@ -205,13 +205,22 @@ class DripBase(object):
 
     def prune(self):
         """
-        Do an exclude for all Users who have a SentDrip already.
+        Do an exclude for all Users who have a SentDrip already or who
+        have unsubscribed (if this is a marketing drip).
         """
         target_user_ids = self.get_queryset().values_list('id', flat=True)
         exclude_user_ids = SentDrip.objects.filter(date__lt=conditional_now(),
                                                    drip=self.drip_model,
                                                    user__id__in=target_user_ids)\
                                            .values_list('user_id', flat=True)
+
+        # If this is a marketing drip, exclude users who have
+        # already unsubscribed from these emails.
+        if self.drip_model.marketing:
+            qs = Unsubscription.objects.filter(user__id__in=target_user_ids)
+            unsub_ids = qs.values_list('user_id', flat=True)
+            exclude_user_ids = list(set(exclude_user_ids).union(unsub_ids))
+
         self._queryset = self.get_queryset().exclude(id__in=exclude_user_ids)
 
     def send(self):
