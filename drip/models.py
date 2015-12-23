@@ -196,8 +196,8 @@ class Subscription(models.Model):
     @staticmethod
     def for_user(user):
         """
-        Creates and saves a Subscription model if one does not already exist
-        for the given user.
+        Returns the Subscription model for this user (or lazily creates
+        one).
         """
         try:
             return Subscription.objects.get(user=user)
@@ -205,6 +205,13 @@ class Subscription(models.Model):
             sub = Subscription(user=user)
             sub.save()
             return sub
+
+    @staticmethod
+    def for_unsubscribe_code(c):
+        try:
+            return Subscription.objects.get(unsubscribe_code=c)
+        except Subscription.DoesNotExist:
+            return None
 
     def __str__(self):
         return '<Subscription user=%s unsubbed=%s>' % (
