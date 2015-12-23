@@ -2,7 +2,7 @@ import sys
 
 from django.db import models
 from django.db.models import ForeignKey, OneToOneField, ManyToManyField
-from django.db.models.related import RelatedObject
+from django.db.models.fields.related import ForeignObjectRel
 
 # taking a nod from python-requests and skipping six
 _ver = sys.version_info
@@ -17,7 +17,7 @@ elif is_py3:
     unicode = str
 
 
-def get_fields(Model, 
+def get_fields(Model,
                parent_field="",
                model_stack=None,
                stack_limit=2,
@@ -25,7 +25,7 @@ def get_fields(Model,
     """
     Given a Model, return a list of lists of strings with important stuff:
     ...
-    ['test_user__user__customuser', 'customuser', 'User', 'RelatedObject']
+    ['test_user__user__customuser', 'customuser', 'User', 'ForeignObjectRel']
     ['test_user__unique_id', 'unique_id', 'TestUser', 'CharField']
     ['test_user__confirmed', 'confirmed', 'TestUser', 'BooleanField']
     ...
@@ -66,7 +66,7 @@ def get_fields(Model,
     for field in fields:
         field_name = field.name
 
-        if isinstance(field, RelatedObject):
+        if isinstance(field, ForeignObjectRel):
             field_name = field.field.related_query_name()
 
         if parent_field:
@@ -82,9 +82,9 @@ def get_fields(Model,
 
         if not stop_recursion and \
                 (isinstance(field, ForeignKey) or isinstance(field, OneToOneField) or \
-                isinstance(field, RelatedObject) or isinstance(field, ManyToManyField)):
+                isinstance(field, ForeignObjectRel) or isinstance(field, ManyToManyField)):
 
-            if isinstance(field, RelatedObject):
+            if isinstance(field, ForeignObjectRel):
                 RelModel = field.model
                 #field_names.extend(get_fields(RelModel, full_field, True))
             else:
