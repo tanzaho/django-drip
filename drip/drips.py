@@ -7,9 +7,9 @@ from django.template import Context, Template
 from django.utils.importlib import import_module
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
+from django.contrib.auth.models import User
 
 from drip.models import SentDrip
-from drip.utils import get_user_model
 
 try:
     from django.utils.timezone import now as conditional_now
@@ -260,5 +260,4 @@ class DripBase(object):
         Alternatively, you could create Drips on the fly
         using a queryset builder from the admin interface...
         """
-        User = get_user_model()
         return User.objects

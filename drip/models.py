@@ -3,8 +3,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.conf import settings
-
-from drip.utils import get_user_model
+from django.contrib.auth.models import User
 
 # just using this to parse, but totally insane package naming...
 # https://bitbucket.org/schinckel/django-timedelta-field/
@@ -105,7 +104,6 @@ class QuerySetRule(models.Model):
                    '`now-7 days` or `today+3 days` for fancy timedelta.'))
 
     def clean(self):
-        User = get_user_model()
         try:
             self.apply(User.objects.all())
         except Exception as e:

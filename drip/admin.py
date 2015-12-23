@@ -3,10 +3,10 @@ import json
 
 from django import forms
 from django.contrib import admin
+from django.contrib.auth.models import User
 
 from drip.models import Drip, SentDrip, QuerySetRule
 from drip.drips import configured_message_classes, message_class_for
-from drip.utils import get_user_model
 
 
 class QuerySetRuleInline(admin.TabularInline):
@@ -54,7 +54,6 @@ class DripAdmin(admin.ModelAdmin):
         from django.shortcuts import render, get_object_or_404
         from django.http import HttpResponse
         drip = get_object_or_404(Drip, id=drip_id)
-        User = get_user_model()
         user = get_object_or_404(User, id=user_id)
 
         drip_message = message_class_for(drip.message_class)(drip.drip, user)
@@ -74,7 +73,6 @@ class DripAdmin(admin.ModelAdmin):
     def build_extra_context(self, extra_context):
         from drip.utils import get_simple_fields
         extra_context = extra_context or {}
-        User = get_user_model()
         extra_context['field_data'] = json.dumps(get_simple_fields(User))
         return extra_context
 
