@@ -1,3 +1,5 @@
+
+import uuid
 from datetime import datetime, timedelta
 
 from django.db import models
@@ -8,6 +10,10 @@ from django.contrib.auth.models import User
 # just using this to parse, but totally insane package naming...
 # https://bitbucket.org/schinckel/django-timedelta-field/
 import timedelta as djangotimedelta
+
+
+def unique_code():
+    return str(uuid.uuid4())
 
 
 class Drip(models.Model):
@@ -179,10 +185,27 @@ class QuerySetRule(models.Model):
         return qs.filter(**kwargs)
 
 
-class Unsubscription(models.Model):
-    """ Marks a user as unsubscribed from marketing emails. """
+class Subscription(models.Model):
+    """ Indicates whether a user is unsubscribed from marketing emails. """
     user = models.OneToOneField(User)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    started = models.DateTimeField(auto_now_add=True)
+    unsubscribe_code = models.CharField(max_length=255, blank=False,
+        unique=True, default=unique_code)
+    unsubscribed = models.BooleanField(default=False)
+
+    @staticmethod
+    def for_user(user):
+        """
+        Creates and saves a Subscription model if one does not already exist
+        for the given user.
+        """
+        try:
+            return Subscription.objects.get(user=user)
+        except Subscription.DoesNotExist:
+            sub = Subscription(user=user)
+            sub.save()
+            return sub
 
     def __str__(self):
-        return '<Unsubscription user=%s>' % self.user.username
+        return '<Subscription user=%s unsubbed=%s>' % (
+            self.user.username, self.unsubscribed)
