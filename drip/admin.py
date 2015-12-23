@@ -5,7 +5,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import User
 
-from drip.models import Drip, SentDrip, QuerySetRule
+from drip.models import Drip, SentDrip, QuerySetRule, Unsubscription
 from drip.drips import configured_message_classes, message_class_for
 
 
@@ -107,3 +107,5 @@ class SentDripAdmin(admin.ModelAdmin):
     list_display = [f.name for f in SentDrip._meta.fields]
     ordering = ['-id']
 admin.site.register(SentDrip, SentDripAdmin)
+
+admin.site.register(Unsubscription)
