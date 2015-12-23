@@ -21,6 +21,10 @@ class Drip(models.Model):
         help_text='A unique name for this drip.')
 
     enabled = models.BooleanField(default=False)
+    marketing = models.BooleanField(default=True,
+        help_text='If true, users who have unsubscribed will not get this ' \
+                  'email. An unsubscribe link will be added automatically to ' \
+                  'the email footer.')
 
     from_email = models.EmailField(null=True, blank=True,
         help_text='Set a custom from email.')
