@@ -1,5 +1,6 @@
 import operator
 import functools
+from datetime import datetime
 
 from django.conf import settings
 from django.db.models import Q
@@ -269,6 +270,8 @@ class DripBase(object):
                         body=message_instance.body
                     )
                     count += 1
+                print('[%s] SENT "%s" -> %s' % (datetime.utcnow(),
+                    self.drip_model.name, user.email))
             except Exception as e:
                 logging.error("Failed to send drip %s to user %s: %s" % (self.drip_model.id, user, e))
 
