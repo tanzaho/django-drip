@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.conf import settings
-from django.contrib.auth.models import User
 
 # just using this to parse, but totally insane package naming...
 # https://bitbucket.org/schinckel/django-timedelta-field/
@@ -187,7 +186,7 @@ class QuerySetRule(models.Model):
 
 class Subscription(models.Model):
     """ Indicates whether a user is unsubscribed from marketing emails. """
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
     started = models.DateTimeField(auto_now_add=True)
     unsubscribe_code = models.CharField(max_length=255, blank=False,
         unique=True, default=unique_code)
