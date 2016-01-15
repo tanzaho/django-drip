@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import operator
 import functools
 from datetime import datetime
